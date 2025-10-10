@@ -19,6 +19,7 @@ def create_user(**params):
     """Create a return a new user"""
     return get_user_model().objects.create_user(**params)
 
+
 class PublicUserApiTest(TestCase):
 
     def setUP(self):
@@ -86,7 +87,7 @@ class PublicUserApiTest(TestCase):
         create_user(email='test@example.com', password='goodpass')
 
         payload = {
-            'email':'test@example.com',
+            'email': 'test@example.com',
             'password': 'badpass'
         }
 
@@ -126,7 +127,7 @@ class PrivateUserApiTests(TestCase):
 
     def test_retrieve_profile_sucessful(self):
         """Test retrieving profile for logged in user"""
-        res= self.client.get(ME_URL)
+        res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
@@ -143,12 +144,9 @@ class PrivateUserApiTests(TestCase):
     def test_update_user_profile(self):
         """Test updating user profile for authenticated user"""
         payload = {'name': 'Updated name', 'password': 'newpass123'}
-
-        res= self.client.patch(ME_URL, payload)
+        res = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-
